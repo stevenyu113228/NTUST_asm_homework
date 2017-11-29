@@ -105,6 +105,16 @@ OUT_OF_RANGE:
 SET_BGCOLOR:
     and color,0fh  ; masking
     or  color,ah   ; set bg color
+
+    ; 顯示背景顏色 start
+    mov ah,09h  ; 設定顯示文字
+    mov dl,00h   ; 設定char 內容
+    mov bh,00h  ; 頁碼 0
+    mov bl,color ; 顏色
+    mov cx,02h  ; 重複次數
+    int 10h
+    ; 顯示背景顏色 end
+
     ret
 CHANGE_BACKCOLOR endp
 
