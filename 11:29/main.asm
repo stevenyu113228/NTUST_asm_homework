@@ -113,7 +113,7 @@ SET_BGCOLOR:
     mov bl,color ; 顏色
     mov cx,02h  ; 重複次數
     int 10h
-    ; 顯示背景顏色 end
+    ; 顯示背景顏色 end (游標不會移動)
 
     ret
 CHANGE_BACKCOLOR endp
