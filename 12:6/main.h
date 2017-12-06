@@ -69,28 +69,6 @@ L1:
 OVER_W:
     mov cx,col
     inc dx
-    push ax
-    mov ax,row
-    add ax,40
-    cmp dx,ax
-    pop ax
-    jna L1
-endm
-
-clear_screen macro row,col,color
-local L1,L2
-    mov cx,col
-    mov dx,row
-L1:
-    draw_pixel cx,dx,color
-    inc cx
-    mov ax,col
-    add ax,40
-    cmp cx,ax
-    jna L1
-L2: 
-    mov cx,0
-    inc dx
     mov ax,row
     add ax,40
     cmp dx,ax

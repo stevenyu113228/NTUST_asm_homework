@@ -12,14 +12,15 @@ MAIN PROC
     mov ax,@DATA
     mov ds,ax
 
-    draw_mode
-    bg_color 03h
+    draw_mode    ; into draw mode
+    bg_color 03h ; set bg color = 03h 青綠色
 
+; ==========MAIN LOOP========
 WWW:
     triangle column_init,row_init,color
     get_char
     cmp al,1bh	 ;是否為ESC鍵
-	je exit
+	je EXIT
     cmp al,'8'  ; up row - 4
     je UP
     cmp al,'2'  ; down row + 4
@@ -30,50 +31,97 @@ WWW:
     je RIGHT
     cmp al,'5'  ; change color
     je CHGCOLOR
+    jmp WWW
+; ==========MAIN LOOP========
 
+
+
+; --------------------KEY_START--------------------
+
+; ----------UP_START-----------
 UP:
-    clear_screen row_init,column_init,03h
+    triangle column_init,row_init,03h ;clear screen
     mov ax,row_init
     sub ax,4
+    cmp ax,0
+    jl UP_OUT_OF_RANGE  ; signed <
+    jmp UP_SUBMIT
+UP_OUT_OF_RANGE:
+    mov ax,0
+UP_SUBMIT:
     mov row_init,ax
     jmp WWW
+; ----------UP_STOP-----------
 
+
+; ----------DOWN_START-----------
 DOWN:
-    clear_screen row_init,column_init,03h
+    triangle column_init,row_init,03h ;clear screen
     mov ax,row_init
     add ax,4
+    cmp ax,440
+    ja DOWN_OUT_OF_RANGE
+    jmp DOWN_SUBMIT
+DOWN_OUT_OF_RANGE:
+    mov ax,440
+DOWN_SUBMIT:
     mov row_init,ax
     jmp WWW
+; ----------DOWN_STOP-----------
 
+
+; ----------LEFT_START-----------
 LEFT:
-    clear_screen row_init,column_init,03h
+    triangle column_init,row_init,03h ;clear screen
     mov ax,column_init
     sub ax,4
+    cmp ax,0
+    jl LEFT_OUT_OF_RANGE ; signed <
+    jmp LEFT_SUBMIT
+LEFT_OUT_OF_RANGE:
+    mov ax,0
+LEFT_SUBMIT:
     mov column_init,ax
     jmp WWW
+; ----------LEFT_STOP-----------
 
+
+
+; ----------RIGHT_START-----------
 RIGHT:
-    clear_screen row_init,column_init,03h
+    triangle column_init,row_init,03h ;clear screen
     mov ax,column_init
     add ax,4
+    cmp ax,600
+    ja RIGHT_OUT_OF_RANGE
+    jmp RIGHT_SUBMIT
+RIGHT_OUT_OF_RANGE:
+    mov ax,600
+RIGHT_SUBMIT:
     mov column_init,ax
     jmp WWW
+; ----------RIGHT_STOP-----------
 
+
+; ----------CHANGE_COLOR_START-----------
 CHGCOLOR:
-    clear_screen row_init,column_init,03h
+    triangle column_init,row_init,03h ;clear screen
     mov ah,color
     cmp ah,15
-    je SET_COLOR0
+    je COLOR_OUT_OF_RANGE
     inc ah
-    mov color,ah
-    jmp WWW
-
-SET_COLOR0:
+    jmp COLOR_SUBMIT
+COLOR_OUT_OF_RANGE:
     mov ah,0
+COLOR_SUBMIT:
     mov color,ah
     jmp WWW
+; ----------CHANGE_COLOR_STOP-----------
 
-exit:    
+; --------------------KEY_STOP--------------------
+
+; ----------END_PROGRAM-----------
+EXIT:    
     text_mode
     mov ax,4c00h
     int 21h
